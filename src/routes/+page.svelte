@@ -4,7 +4,7 @@
 	import { YOUTUBE_IFRAME_API } from '$lib/constants/youtube'
 	import { onMount } from 'svelte'
 
-	const PROGRESS_INTERVAL_MS = 500
+	const PROGRESS_INTERVAL_MS = 100
 	const SEEK_SECONDS_PER_PIXEL = 0.3
 
 	// eslint-disable-next-line init-declarations
