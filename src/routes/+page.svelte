@@ -17,7 +17,7 @@
 
 	function update_progress(): void {
 		if (!player) return
-		if (player.getPlayerState() !== 1) return
+		if (player.getPlayerState() !== YT.PlayerState.PLAYING) return
 
 		const total = player.getDuration()
 
@@ -35,7 +35,7 @@
 	}
 
 	function handle_state_change(event: YT.PlayerStateEvent): void {
-		if (event.data !== 0) return
+		if (event.data !== YT.PlayerState.ENDED) return
 
 		switch_to_video((current_index + 1) % VIDEO_IDS.length)
 	}
@@ -103,8 +103,8 @@
 </script>
 
 <h1 class="sr-only">Signage</h1>
-<div class="flex h-screen w-screen flex-col overflow-hidden bg-black">
-	<div class="flex-1">
+<div class="signage-root flex w-screen flex-col overflow-hidden bg-black">
+	<div class="min-h-0 flex-1">
 		<div id="yt-player" class="video-container h-full w-full"></div>
 	</div>
 	<Timeline
@@ -117,6 +117,12 @@
 </div>
 
 <style>
+	.signage-root {
+		height: 100vh;
+		height: 100dvh;
+		min-height: 0;
+	}
+
 	.video-container :global(iframe) {
 		display: block;
 		width: 100%;

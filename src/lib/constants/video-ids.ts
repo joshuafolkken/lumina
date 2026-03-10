@@ -7,4 +7,4 @@ export const VIDEO_IDS = [
 	'x_N4atEzAAE',
 	'0U6lPXsy_-E',
 	'QHZ4lQFlwjg',
-] as const
+] as const satisfies ReadonlyArray<string>

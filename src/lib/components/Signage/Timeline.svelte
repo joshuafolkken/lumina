@@ -18,7 +18,7 @@
 	}
 </script>
 
-<div class="flex h-36 flex-row gap-2 overflow-x-auto bg-gray-900 p-2">
+<div class="flex h-36 shrink-0 flex-row gap-2 overflow-x-auto overflow-y-hidden bg-gray-900 p-2">
 	{#each video_ids as video_id, index (video_id)}
 		<ThumbnailItem
 			{video_id}

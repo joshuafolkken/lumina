@@ -14,24 +14,81 @@
 
 	const { video_id, is_active, progress, on_select, on_seek }: Props = $props()
 
+	let touch_start_x = 0
 	let touch_start_y = 0
+	let did_scroll = false
 
 	function thumbnail_url(id: string): string {
 		return `${THUMBNAIL_BASE_URL}/${id}/mqdefault.jpg`
 	}
 
+	function exceeds_tap_threshold(delta_x: number, delta_y: number): boolean {
+		return delta_x >= TAP_THRESHOLD_PX || delta_y >= TAP_THRESHOLD_PX
+	}
+
 	function handle_touch_start(event_: TouchEvent): void {
+		touch_start_x = event_.touches[0]?.clientX ?? 0
 		touch_start_y = event_.touches[0]?.clientY ?? 0
+		did_scroll = false
+	}
+
+	function handle_touch_move(event_: TouchEvent): void {
+		const [touch] = event_.touches
+		if (!touch) return
+
+		const delta_x = Math.abs(touch.clientX - touch_start_x)
+		const delta_y = Math.abs(touch.clientY - touch_start_y)
+
+		did_scroll = did_scroll || exceeds_tap_threshold(delta_x, delta_y)
+	}
+
+	function compute_touch_deltas(event_: TouchEvent): { delta_x: number; delta_y: number } {
+		const [touch] = event_.changedTouches
+		const end_x = touch?.clientX ?? touch_start_x
+		const end_y = touch?.clientY ?? touch_start_y
+
+		return {
+			delta_x: Math.abs(end_x - touch_start_x),
+			delta_y: Math.abs(touch_start_y - end_y),
+		}
+	}
+
+	function apply_seek_if_needed(event_: TouchEvent, delta_y: number): void {
+		if (!is_active || delta_y < TAP_THRESHOLD_PX) return
+
+		const [touch] = event_.changedTouches
+		const end_y = touch?.clientY ?? touch_start_y
+		on_seek(touch_start_y - end_y)
+	}
+
+	function try_handle_scroll(event_: TouchEvent, delta_x: number, delta_y: number): boolean {
+		const is_scroll = did_scroll || exceeds_tap_threshold(delta_x, delta_y)
+		if (!is_scroll) return false
+
+		apply_seek_if_needed(event_, delta_y)
+		did_scroll = true
+
+		return true
 	}
 
 	function handle_touch_end(event_: TouchEvent): void {
 		event_.preventDefault()
 
-		const end_y = event_.changedTouches[0]?.clientY ?? touch_start_y
-		const delta = touch_start_y - end_y
+		const { delta_x, delta_y } = compute_touch_deltas(event_)
 
-		if (is_active && Math.abs(delta) >= TAP_THRESHOLD_PX) {
-			on_seek(delta)
+		if (try_handle_scroll(event_, delta_x, delta_y)) return
+
+		on_select()
+	}
+
+	function handle_click(event_: MouseEvent): void {
+		if (did_scroll) {
+			event_.preventDefault()
+			event_.stopPropagation()
+			setTimeout(() => {
+				did_scroll = false
+			}, 0)
+
 			return
 		}
 
@@ -48,8 +105,9 @@
 	class:ring-2={is_active}
 	class:ring-white={is_active}
 	ontouchstart={handle_touch_start}
+	ontouchmove={handle_touch_move}
 	ontouchend={handle_touch_end}
-	onclick={on_select}
+	onclick={handle_click}
 	onkeydown={handle_keydown}
 	role="button"
 	tabindex="0"
