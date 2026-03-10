@@ -46,6 +46,7 @@ declare namespace YT {
 	interface PlayerVars {
 		autoplay?: 0 | 1
 		controls?: 0 | 1
+		fs?: 0 | 1
 		rel?: 0 | 1
 		modestbranding?: 0 | 1
 		playsinline?: 0 | 1
