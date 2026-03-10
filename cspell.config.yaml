@@ -21,6 +21,7 @@ ignorePaths:
   - .fast-check/**
   - src/lib/paraglide/**
   - project.inlang/**
+  - src/lib/constants/video-ids.ts
 words:
   - aikidosec
   - coderabbit
@@ -32,7 +33,10 @@ words:
   - joshuafolkken
   - libsql
   - mischeck
+  - modestbranding
+  - mqdefault
   - paraglide
+  - seekbar
   - sonarjs
   - Stylesheet
   - trycloudflare
