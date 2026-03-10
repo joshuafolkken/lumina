@@ -2,6 +2,7 @@
 	import Timeline from '$lib/components/Signage/Timeline.svelte'
 	import { VIDEO_IDS } from '$lib/constants/video-ids'
 	import { YOUTUBE_IFRAME_API } from '$lib/constants/youtube'
+	import { volume_preference } from '$lib/storage/volume-preference'
 	import { onMount } from 'svelte'
 
 	const PROGRESS_INTERVAL_MS = 100
@@ -10,6 +11,8 @@
 	let player: YT.Player | undefined
 	let current_index = $state(0)
 	let progress = $state(0)
+	// eslint-disable-next-line init-declarations
+	let is_muted_previous: boolean | undefined
 
 	function get_video_id(index: number): string {
 		return VIDEO_IDS[index % VIDEO_IDS.length] ?? VIDEO_IDS[0]
@@ -24,6 +27,19 @@
 		if (total > 0) {
 			progress = player.getCurrentTime() / total
 		}
+	}
+
+	function detect_and_save_mute_change(): void {
+		if (!player) return
+		const is_muted = player.isMuted()
+		if (is_muted_previous === is_muted) return
+		is_muted_previous = is_muted
+		volume_preference.save(!is_muted)
+	}
+
+	function tick(): void {
+		update_progress()
+		detect_and_save_mute_change()
 	}
 
 	function switch_to_video(index: number): void {
@@ -42,6 +58,10 @@
 
 	function handle_player_ready(event: YT.PlayerReadyEvent): void {
 		event.target.playVideo()
+
+		if (volume_preference.load()) {
+			event.target.unMute()
+		}
 	}
 
 	function init_player(): void {
@@ -87,7 +107,7 @@
 
 	onMount(() => {
 		load_youtube_api()
-		const interval = setInterval(update_progress, PROGRESS_INTERVAL_MS)
+		const interval = setInterval(tick, PROGRESS_INTERVAL_MS)
 
 		return function (): void {
 			clearInterval(interval)

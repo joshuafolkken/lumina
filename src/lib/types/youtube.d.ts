@@ -26,6 +26,12 @@ declare namespace YT {
 
 		playVideo(): void
 
+		mute(): void
+
+		unMute(): void
+
+		isMuted(): boolean
+
 		destroy(): void
 	}
 
