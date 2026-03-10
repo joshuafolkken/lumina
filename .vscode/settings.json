@@ -46,6 +46,6 @@
 	"css.lint.unknownAtRules": "ignore",
 	"sonarlint.connectedMode.project": {
 		"connectionId": "joshuafolkken",
-		"projectKey": "joshuafolkken_sign-cast"
+		"projectKey": "joshuafolkken_lumina"
 	}
 }

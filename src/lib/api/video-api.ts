@@ -1,4 +1,4 @@
-const STORAGE_KEY_PREFIX = 'sign-cast:video-metadata:'
+const STORAGE_KEY_PREFIX = 'lumina:video-metadata:'
 const DAYS_PER_WEEK = 7
 const HOURS_PER_DAY = 24
 const MINUTES_PER_HOUR = 60

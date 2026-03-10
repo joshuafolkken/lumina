@@ -1,6 +1,6 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
-	"name": "sign-cast",
+	"name": "lumina",
 	"compatibility_date": "2026-03-10",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": ".svelte-kit/cloudflare/_worker.js",
@@ -25,7 +25,7 @@
 
 	"routes": [
 		{
-			"pattern": "sign-cast.joshuafolkken.com",
+			"pattern": "lumina.joshuafolkken.com",
 			"custom_domain": true
 		}
 	]
