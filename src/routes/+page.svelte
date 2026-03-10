@@ -1,4 +1,5 @@
 <script lang="ts">
+	import FullscreenButton from '$lib/components/Signage/FullscreenButton.svelte'
 	import Timeline from '$lib/components/Signage/Timeline.svelte'
 	import { VIDEO_IDS } from '$lib/constants/video-ids'
 	import { YOUTUBE_IFRAME_API } from '$lib/constants/youtube'
@@ -6,9 +7,11 @@
 	import { onMount } from 'svelte'
 
 	const PROGRESS_INTERVAL_MS = 100
+	const PLAYER_ELEMENT_ID = 'yt-player'
 
 	// eslint-disable-next-line init-declarations
 	let player: YT.Player | undefined
+	let signage_root = $state<HTMLElement | undefined>()
 	let current_index = $state(0)
 	let progress = $state(0)
 	// eslint-disable-next-line init-declarations
@@ -71,13 +74,14 @@
 		if (!yt_api) return
 
 		/* eslint-disable @typescript-eslint/naming-convention */
-		player = new yt_api.Player('yt-player', {
+		player = new yt_api.Player(PLAYER_ELEMENT_ID, {
 			videoId: VIDEO_IDS[0],
 			width: '100%',
 			height: '100%',
 			playerVars: {
 				autoplay: 1,
 				controls: 1,
+				fs: 0,
 				rel: 0,
 				modestbranding: 1,
 				playsinline: 1,
@@ -102,7 +106,7 @@
 		globalThis.onYouTubeIframeAPIReady = init_player
 		const script = document.createElement('script')
 		script.src = YOUTUBE_IFRAME_API
-		document.head.append(script as Node)
+		document.head.append(script)
 	}
 
 	onMount(() => {
@@ -117,11 +121,27 @@
 </script>
 
 <h1 class="sr-only">Signage</h1>
-<div class="signage-root flex w-screen flex-col overflow-hidden bg-black">
+<div bind:this={signage_root} class="signage-root flex w-screen flex-col overflow-hidden bg-black">
 	<div class="min-h-0 flex-1">
-		<div id="yt-player" class="video-container h-full w-full"></div>
+		<div id={PLAYER_ELEMENT_ID} class="video-container h-full w-full"></div>
 	</div>
 	<Timeline video_ids={VIDEO_IDS} {current_index} {progress} on_select={switch_to_video} />
+	<div class="flex shrink-0 items-center gap-3 bg-gray-900 px-2 py-0.5">
+		<div class="min-w-0 flex-1 text-right">
+			<span class="text-xs text-white/70">
+				<span class="font-bold">Sign Cast</span> powered by
+				<a
+					href="https://joshuafolkken.com"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-white/70 underline hover:text-white"
+				>
+					Joshua Studio
+				</a>
+			</span>
+		</div>
+		<FullscreenButton target={signage_root} />
+	</div>
 </div>
 
 <style>
@@ -129,6 +149,22 @@
 		height: 100vh;
 		height: 100dvh;
 		min-height: 0;
+	}
+
+	.signage-root:fullscreen {
+		outline: none;
+	}
+
+	.signage-root:-webkit-full-screen {
+		outline: none;
+	}
+
+	.signage-root:-moz-full-screen {
+		outline: none;
+	}
+
+	.signage-root:-ms-fullscreen {
+		outline: none;
 	}
 
 	.video-container :global(iframe) {
