@@ -8,3 +8,9 @@ bun.lockb
 # Miscellaneous
 /static/
 /drizzle/
+
+.pnpm-store/
+/project.inlang/
+**/paraglide/
+
+cspell.config.yaml

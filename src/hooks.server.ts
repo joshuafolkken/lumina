@@ -1,32 +1,35 @@
-import { sequence } from '@sveltejs/kit/hooks';
-import { building } from '$app/environment';
-import { auth } from '$lib/server/auth';
-import { svelteKitHandler } from 'better-auth/svelte-kit';
-import type { Handle } from '@sveltejs/kit';
-import { getTextDirection } from '$lib/paraglide/runtime';
-import { paraglideMiddleware } from '$lib/paraglide/server';
+import type { Handle } from '@sveltejs/kit'
+import { sequence } from '@sveltejs/kit/hooks'
+import { building } from '$app/environment'
+import { getTextDirection } from '$lib/paraglide/runtime'
+import { paraglideMiddleware } from '$lib/paraglide/server'
+import { auth_module } from '$lib/server/auth'
+import { svelteKitHandler } from 'better-auth/svelte-kit'
 
-const handleParaglide: Handle = ({ event, resolve }) =>
-	paraglideMiddleware(event.request, ({ request, locale }) => {
-		event.request = request;
+const handle_paraglide: Handle = async ({ event, resolve }) =>
+	await paraglideMiddleware(event.request, async ({ request, locale }) => {
+		event.request = request
 
-		return resolve(event, {
+		return await resolve(event, {
 			transformPageChunk: ({ html }) =>
 				html
 					.replace('%paraglide.lang%', locale)
-					.replace('%paraglide.dir%', getTextDirection(locale))
-		});
-	});
+					.replace('%paraglide.dir%', getTextDirection(locale)),
+		})
+	})
 
-const handleBetterAuth: Handle = async ({ event, resolve }) => {
-	const session = await auth.api.getSession({ headers: event.request.headers });
+const handle_better_auth: Handle = async ({ event, resolve }) => {
+	const session = await auth_module.auth.api.getSession({ headers: event.request.headers })
 
 	if (session) {
-		event.locals.session = session.session;
-		event.locals.user = session.user;
+		// eslint-disable-next-line require-atomic-updates
+		event.locals.session = session.session
+		// eslint-disable-next-line require-atomic-updates
+		event.locals.user = session.user
 	}
 
-	return svelteKitHandler({ event, resolve, auth, building });
-};
+	return await svelteKitHandler({ event, resolve, auth: auth_module.auth, building })
+}
 
-export const handle: Handle = sequence(handleParaglide, handleBetterAuth);
+// eslint-disable-next-line no-restricted-syntax
+export const handle: Handle = sequence(handle_paraglide, handle_better_auth)

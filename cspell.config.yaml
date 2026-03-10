@@ -1,0 +1,40 @@
+version: "0.2"
+language: en
+ignorePaths:
+  - .vscode/**
+  - node_modules/**
+  - build/**
+  - .svelte-kit/**
+  - dist/**
+  - "**/*.d.ts"
+  - "**/*.map"
+  - "**/*.min.js"
+  - .git/**/*
+  - .gitignore
+  - "**/*.svg"
+  - pnpm-lock.yaml
+  - .env*
+  - playwright-report/**
+  - .pnpm-store/**
+  - .wrangler/**
+  - .coderabbit.yaml
+  - .fast-check/**
+  - src/lib/paraglide/**
+  - project.inlang/**
+words:
+  - aikidosec
+  - coderabbit
+  - cooldown
+  - EDITMSG
+  - esbuild
+  - ianvs
+  - inlang
+  - joshuafolkken
+  - libsql
+  - mischeck
+  - paraglide
+  - sonarjs
+  - Stylesheet
+  - trycloudflare
+  - unrs
+  - workerd

@@ -30,3 +30,12 @@ src/lib/paraglide
 project.inlang/cache/
 # SQLite
 *.db
+
+# ESLint cache
+.eslintcache
+
+# svelte-fast-check cache
+.fast-check
+
+# Playwright
+playwright-report
