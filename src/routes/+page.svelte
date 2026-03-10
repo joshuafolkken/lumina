@@ -5,7 +5,6 @@
 	import { onMount } from 'svelte'
 
 	const PROGRESS_INTERVAL_MS = 100
-	const SEEK_SECONDS_PER_PIXEL = 0.3
 
 	// eslint-disable-next-line init-declarations
 	let player: YT.Player | undefined
@@ -43,12 +42,6 @@
 
 	function handle_player_ready(event: YT.PlayerReadyEvent): void {
 		event.target.playVideo()
-	}
-
-	function handle_seek(delta_pixels: number): void {
-		if (!player) return
-
-		player.seekTo(player.getCurrentTime() + delta_pixels * SEEK_SECONDS_PER_PIXEL, true)
 	}
 
 	function init_player(): void {
@@ -108,13 +101,7 @@
 	<div class="min-h-0 flex-1">
 		<div id="yt-player" class="video-container h-full w-full"></div>
 	</div>
-	<Timeline
-		video_ids={VIDEO_IDS}
-		{current_index}
-		{progress}
-		on_select={switch_to_video}
-		on_seek={handle_seek}
-	/>
+	<Timeline video_ids={VIDEO_IDS} {current_index} {progress} on_select={switch_to_video} />
 </div>
 
 <style>

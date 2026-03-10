@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { video_api, type VideoMetadata } from '$lib/api/video-api'
+	import { SHOW_THUMBNAIL_METADATA_ALWAYS } from '$lib/constants/signage'
 	import { PERCENT } from '$lib/constants/ui'
 	import { YOUTUBE_THUMBNAIL_BASE_URL } from '$lib/constants/youtube'
 	import { time_format } from '$lib/utils/time-format'
@@ -11,10 +12,9 @@
 		is_active: boolean
 		progress: number
 		on_select: () => void
-		on_seek: (delta_pixels: number) => void
 	}
 
-	const { video_id, is_active, progress, on_select, on_seek }: Props = $props()
+	const { video_id, is_active, progress, on_select }: Props = $props()
 
 	let is_hovering = $state(false)
 	let metadata = $state<VideoMetadata | undefined>()
@@ -28,10 +28,19 @@
 		/* eslint-enable require-atomic-updates */
 	}
 
+	$effect(() => {
+		/* eslint-disable @typescript-eslint/no-unnecessary-condition -- configurable via SHOW_THUMBNAIL_METADATA_ALWAYS */
+		if (SHOW_THUMBNAIL_METADATA_ALWAYS) void fetch_and_set_metadata()
+		/* eslint-enable @typescript-eslint/no-unnecessary-condition */
+	})
+
 	function handle_mouse_enter(): void {
 		is_hovering = true
 		void fetch_and_set_metadata()
 	}
+
+	/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- configurable via SHOW_THUMBNAIL_METADATA_ALWAYS */
+	const should_show_metadata = $derived(SHOW_THUMBNAIL_METADATA_ALWAYS || is_hovering)
 
 	function format_duration_display(): string {
 		if (metadata === undefined) return '…'
@@ -83,21 +92,11 @@
 		}
 	}
 
-	function apply_seek_if_needed(event_: TouchEvent, delta_y: number): void {
-		if (!is_active || delta_y < TAP_THRESHOLD_PX) return
-
-		const [touch] = event_.changedTouches
-		const end_y = touch?.clientY ?? touch_start_y
-		on_seek(touch_start_y - end_y)
-	}
-
-	function try_handle_scroll(event_: TouchEvent, delta_x: number, delta_y: number): boolean {
+	function try_handle_scroll(delta_x: number, delta_y: number): boolean {
 		const is_scroll = did_scroll || exceeds_tap_threshold(delta_x, delta_y)
 		if (!is_scroll) return false
 
-		apply_seek_if_needed(event_, delta_y)
 		did_scroll = true
-
 		return true
 	}
 
@@ -106,7 +105,7 @@
 
 		const { delta_x, delta_y } = compute_touch_deltas(event_)
 
-		if (try_handle_scroll(event_, delta_x, delta_y)) return
+		if (try_handle_scroll(delta_x, delta_y)) return
 
 		on_select()
 	}
@@ -150,7 +149,7 @@
 		class="block w-full object-cover"
 		draggable="false"
 	/>
-	{#if is_hovering}
+	{#if should_show_metadata}
 		<div class="absolute inset-0 p-2" aria-hidden="true">
 			<p
 				class="thumbnail-overlay-text -mx-1 line-clamp-2 px-1 text-xs leading-tight font-medium text-white"
