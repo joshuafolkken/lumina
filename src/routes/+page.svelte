@@ -102,6 +102,7 @@
 	})
 </script>
 
+<h1 class="sr-only">Signage</h1>
 <div class="flex h-screen w-screen flex-col overflow-hidden bg-black">
 	<div class="flex-1">
 		<div id="yt-player" class="video-container h-full w-full"></div>
