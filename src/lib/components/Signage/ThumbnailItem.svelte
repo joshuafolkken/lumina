@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { video_api, type VideoMetadata } from '$lib/api/video-api'
 	import { PERCENT } from '$lib/constants/ui'
+	import { YOUTUBE_THUMBNAIL_BASE_URL } from '$lib/constants/youtube'
+	import { time_format } from '$lib/utils/time-format'
 
 	const TAP_THRESHOLD_PX = 5
-	const THUMBNAIL_BASE_URL = 'https://img.youtube.com/vi'
 
 	interface Props {
 		video_id: string
@@ -14,12 +16,40 @@
 
 	const { video_id, is_active, progress, on_select, on_seek }: Props = $props()
 
+	let is_hovering = $state(false)
+	let metadata = $state<VideoMetadata | undefined>()
+
+	async function fetch_and_set_metadata(): Promise<void> {
+		if (metadata !== undefined) return
+
+		const result = await video_api.fetch_metadata(video_id)
+		/* eslint-disable require-atomic-updates -- safe cache population */
+		if (result) metadata = result
+		/* eslint-enable require-atomic-updates */
+	}
+
+	function handle_mouse_enter(): void {
+		is_hovering = true
+		void fetch_and_set_metadata()
+	}
+
+	function format_duration_display(): string {
+		if (metadata === undefined) return '…'
+		if (metadata.duration_seconds === undefined) return '?:??'
+
+		return time_format.duration(metadata.duration_seconds)
+	}
+
+	function handle_mouse_leave(): void {
+		is_hovering = false
+	}
+
 	let touch_start_x = 0
 	let touch_start_y = 0
 	let did_scroll = false
 
 	function thumbnail_url(id: string): string {
-		return `${THUMBNAIL_BASE_URL}/${id}/mqdefault.jpg`
+		return `${YOUTUBE_THUMBNAIL_BASE_URL}/${id}/mqdefault.jpg`
 	}
 
 	function exceeds_tap_threshold(delta_x: number, delta_y: number): boolean {
@@ -104,6 +134,8 @@
 	class="relative aspect-video h-full shrink-0 cursor-pointer overflow-hidden rounded transition-all duration-200"
 	class:ring-2={is_active}
 	class:ring-white={is_active}
+	onmouseenter={handle_mouse_enter}
+	onmouseleave={handle_mouse_leave}
 	ontouchstart={handle_touch_start}
 	ontouchmove={handle_touch_move}
 	ontouchend={handle_touch_end}
@@ -118,6 +150,18 @@
 		class="block w-full object-cover"
 		draggable="false"
 	/>
+	{#if is_hovering}
+		<div class="absolute inset-0 p-2" aria-hidden="true">
+			<p
+				class="thumbnail-overlay-text -mx-1 line-clamp-2 px-1 text-xs leading-tight font-medium text-white"
+			>
+				{metadata?.title ?? '…'}
+			</p>
+			<p class="thumbnail-overlay-text absolute right-2 bottom-2 text-xs text-white">
+				{format_duration_display()}
+			</p>
+		</div>
+	{/if}
 	{#if is_active}
 		<div
 			class="absolute bottom-0 left-0 h-1 bg-red-500 transition-all duration-500"
@@ -125,3 +169,17 @@
 		></div>
 	{/if}
 </div>
+
+<style>
+	.thumbnail-overlay-text {
+		text-shadow:
+			0 0 2px black,
+			0 0 4px black,
+			0 1px 2px black,
+			1px 0 2px black,
+			-1px 0 2px black,
+			0 -1px 2px black,
+			1px 1px 2px black,
+			-1px -1px 2px black;
+	}
+</style>

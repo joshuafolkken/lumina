@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { PERCENT } from '$lib/constants/ui'
+	import { time_format } from '$lib/utils/time-format'
 
-	const SECONDS_PER_MINUTE = 60
-	const TIME_DIGIT_WIDTH = 2
 	const SEEK_STEP = 0.01
 
 	interface Props {
@@ -17,12 +16,6 @@
 	let hover_ratio = $state(0)
 
 	const current_time = $derived(progress * duration)
-
-	function format_time(total_seconds: number): string {
-		const mins = Math.floor(total_seconds / SECONDS_PER_MINUTE)
-		const secs = Math.floor(total_seconds % SECONDS_PER_MINUTE)
-		return `${mins.toString()}:${secs.toString().padStart(TIME_DIGIT_WIDTH, '0')}`
-	}
 
 	function calculate_ratio(event: MouseEvent): number {
 		const element = event.currentTarget
@@ -63,8 +56,8 @@
 	{#if is_hovering}
 		<div class="absolute right-0 bottom-0 left-0 bg-linear-to-t from-black/70 to-transparent p-4">
 			<div class="mb-2 flex justify-between text-sm text-white">
-				<span>{format_time(current_time)}</span>
-				<span>{format_time(duration)}</span>
+				<span>{time_format.duration(current_time)}</span>
+				<span>{time_format.duration(duration)}</span>
 			</div>
 			<div
 				class="relative h-2 cursor-pointer rounded bg-white/30"

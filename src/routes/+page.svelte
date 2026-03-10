@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Timeline from '$lib/components/Signage/Timeline.svelte'
 	import { VIDEO_IDS } from '$lib/constants/video-ids'
+	import { YOUTUBE_IFRAME_API } from '$lib/constants/youtube'
 	import { onMount } from 'svelte'
 
 	const PROGRESS_INTERVAL_MS = 500
@@ -87,8 +88,8 @@
 
 		globalThis.onYouTubeIframeAPIReady = init_player
 		const script = document.createElement('script')
-		script.src = 'https://www.youtube.com/iframe_api'
-		document.head.append(script)
+		script.src = YOUTUBE_IFRAME_API
+		document.head.append(script as Node)
 	}
 
 	onMount(() => {
