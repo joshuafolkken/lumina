@@ -53,6 +53,7 @@ export default defineConfig(
 	{
 		// tsconfig に含まれないファイルを明示的に除外
 		ignores: [
+			'node_modules/**',
 			'src/app.d.ts',
 			'*.config.{ts,js,cjs,mjs}',
 			// 'src/routes/**/+layout.svelte',
@@ -90,6 +91,8 @@ export default defineConfig(
 				},
 				node: true,
 			},
+			// node_modules 内の Svelte 5 の非標準構文を含むファイルのパースエラーを回避
+			'import-x/ignore': ['node_modules'],
 		},
 	},
 	{
