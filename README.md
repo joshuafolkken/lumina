@@ -15,7 +15,7 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-pnpm dlx sv@0.12.5 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" playwright tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:cloudflare+cfTarget:workers" devtools-json drizzle="database:sqlite+sqlite:libsql" better-auth="demo:password" paraglide="languageTags:en, ja+demo:no" mcp="ide:claude-code,cursor,gemini+setup:remote" --install pnpm sign-cast
+pnpm dlx sv@0.12.5 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" playwright tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:cloudflare+cfTarget:workers" devtools-json drizzle="database:sqlite+sqlite:libsql" better-auth="demo:password" paraglide="languageTags:en, ja+demo:no" mcp="ide:claude-code,cursor,gemini+setup:remote" --install pnpm lumina
 ```
 
 ## Developing
