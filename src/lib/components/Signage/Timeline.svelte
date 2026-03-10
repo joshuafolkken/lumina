@@ -6,10 +6,9 @@
 		current_index: number
 		progress: number
 		on_select: (index: number) => void
-		on_seek: (delta_pixels: number) => void
 	}
 
-	const { video_ids, current_index, progress, on_select, on_seek }: Props = $props()
+	const { video_ids, current_index, progress, on_select }: Props = $props()
 
 	function make_select_handler(item_index: number): () => void {
 		return function (): void {
@@ -25,7 +24,6 @@
 			is_active={index === current_index}
 			progress={index === current_index ? progress : 0}
 			on_select={make_select_handler(index)}
-			{on_seek}
 		/>
 	{/each}
 </div>
