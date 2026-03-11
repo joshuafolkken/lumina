@@ -4,8 +4,12 @@ import tailwindcss from '@tailwindcss/vite'
 import { playwright } from '@vitest/browser-playwright'
 import devtoolsJson from 'vite-plugin-devtools-json'
 import { defineConfig } from 'vitest/config'
+import pkg from './package.json'
 
 export default defineConfig({
+	define: {
+		__APP_VERSION__: JSON.stringify(pkg.version),
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit(),

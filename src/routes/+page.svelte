@@ -147,6 +147,7 @@
 					Joshua Studio
 				</a>
 			</span>
+			<span data-version={__APP_VERSION__} class="hidden">v{__APP_VERSION__}</span>
 		</div>
 		<FullscreenButton target={signage_root} />
 	</div>
