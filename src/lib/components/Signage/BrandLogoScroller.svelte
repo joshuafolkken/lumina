@@ -22,7 +22,10 @@
 
 <style>
 	.logo-panel {
-		width: 10rem;
+		width: 10vw;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
 		flex-shrink: 0;
 		overflow: hidden;
 		background-color: white;
@@ -39,7 +42,7 @@
 	}
 
 	.logo-item {
-		padding: 1rem;
+		padding: 1vw;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -53,7 +56,7 @@
 	.logo-img {
 		width: 100%;
 		height: auto;
-		max-height: 5rem;
+		max-height: 5vw;
 		object-fit: contain;
 	}
 

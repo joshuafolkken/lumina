@@ -107,7 +107,9 @@
 		globalThis.onYouTubeIframeAPIReady = init_player
 		const script = document.createElement('script')
 		script.src = YOUTUBE_IFRAME_API
-		document.head.append(script)
+		// appendChild used to avoid type conflict with Cloudflare worker-configuration.d.ts Element.append
+		// eslint-disable-next-line unicorn/prefer-dom-node-append
+		document.head.appendChild(script)
 	}
 
 	onMount(() => {
@@ -122,7 +124,7 @@
 </script>
 
 <h1 class="sr-only">Lumina</h1>
-<div bind:this={signage_root} class="signage-root flex w-screen flex-col overflow-hidden bg-black">
+<div bind:this={signage_root} class="signage-root flex w-full flex-col overflow-hidden bg-black">
 	<div class="flex min-h-0 flex-1 flex-col">
 		<div class="flex min-h-0 flex-1">
 			<div class="min-h-0 flex-1">
@@ -132,9 +134,9 @@
 		</div>
 		<Timeline video_ids={VIDEO_IDS} {current_index} {progress} on_select={switch_to_video} />
 	</div>
-	<div class="flex shrink-0 items-center gap-3 bg-gray-900 px-2 py-0.5">
+	<div class="flex shrink-0 items-center gap-[1vh] bg-gray-900 px-[1vh] py-[0.4vh]">
 		<div class="min-w-0 flex-1 text-right">
-			<span class="text-xs text-white/70">
+			<span class="text-[max(1.2vh,10px)] text-white/70">
 				<span class="font-bold">Lumina</span> powered by
 				<a
 					href="https://joshuafolkken.com"

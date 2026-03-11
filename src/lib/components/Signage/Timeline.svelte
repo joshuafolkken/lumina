@@ -110,7 +110,7 @@
 
 <div
 	bind:this={container}
-	class="flex h-36 shrink-0 flex-row gap-2 overflow-x-auto overflow-y-hidden bg-gray-900 p-2"
+	class="flex h-[15vh] shrink-0 flex-row gap-[1vh] overflow-x-auto overflow-y-hidden bg-gray-900 p-[1vh]"
 	onscroll={handle_user_scroll}
 	onscrollend={handle_scroll_end}
 >

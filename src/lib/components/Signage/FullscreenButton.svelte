@@ -45,13 +45,13 @@
 
 <button
 	type="button"
-	class="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+	class="flex h-[max(4vh,32px)] w-[max(4vh,32px)] shrink-0 cursor-pointer items-center justify-center rounded text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-[0.3vh] focus-visible:ring-white/50"
 	aria-label="フルスクリーン"
 	onclick={toggle_fullscreen}
 >
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		class="block size-5"
+		class="block h-[max(2vh,16px)] w-[max(2vh,16px)]"
 		viewBox="0 0 24 24"
 		fill="none"
 		stroke="currentColor"

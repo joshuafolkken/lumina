@@ -131,7 +131,7 @@
 
 <div
 	class="relative aspect-video h-full shrink-0 cursor-pointer overflow-hidden rounded transition-all duration-200"
-	class:ring-2={is_active}
+	class:ring-[0.3vh]={is_active}
 	class:ring-white={is_active}
 	onmouseenter={handle_mouse_enter}
 	onmouseleave={handle_mouse_leave}
@@ -150,20 +150,22 @@
 		draggable="false"
 	/>
 	{#if should_show_metadata}
-		<div class="absolute inset-0 p-2" aria-hidden="true">
+		<div class="absolute inset-0 p-[1vh]" aria-hidden="true">
 			<p
-				class="thumbnail-overlay-text -mx-1 line-clamp-2 px-1 text-xs leading-tight font-medium text-white"
+				class="thumbnail-overlay-text -mx-[0.5vh] line-clamp-2 px-[0.5vh] text-[max(1.2vh,10px)] leading-tight font-medium text-white"
 			>
 				{metadata?.title ?? '…'}
 			</p>
-			<p class="thumbnail-overlay-text absolute right-2 bottom-2 text-xs text-white">
+			<p
+				class="thumbnail-overlay-text absolute right-[1vh] bottom-[1vh] text-[max(1.2vh,10px)] text-white"
+			>
 				{format_duration_display()}
 			</p>
 		</div>
 	{/if}
 	{#if is_active}
 		<div
-			class="absolute bottom-0 left-0 h-1 bg-red-500 transition-all duration-500"
+			class="absolute bottom-0 left-0 h-[0.5vh] bg-red-500 transition-all duration-500"
 			style:width="{progress * PERCENT}%"
 		></div>
 	{/if}
