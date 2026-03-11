@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BrandLogoScroller from '$lib/components/Signage/BrandLogoScroller.svelte'
 	import FullscreenButton from '$lib/components/Signage/FullscreenButton.svelte'
 	import Timeline from '$lib/components/Signage/Timeline.svelte'
 	import { VIDEO_IDS } from '$lib/constants/video-ids'
@@ -122,10 +123,15 @@
 
 <h1 class="sr-only">Lumina</h1>
 <div bind:this={signage_root} class="signage-root flex w-screen flex-col overflow-hidden bg-black">
-	<div class="min-h-0 flex-1">
-		<div id={PLAYER_ELEMENT_ID} class="video-container h-full w-full"></div>
+	<div class="flex min-h-0 flex-1 flex-col">
+		<div class="flex min-h-0 flex-1">
+			<div class="min-h-0 flex-1">
+				<div id={PLAYER_ELEMENT_ID} class="video-container h-full w-full"></div>
+			</div>
+			<BrandLogoScroller />
+		</div>
+		<Timeline video_ids={VIDEO_IDS} {current_index} {progress} on_select={switch_to_video} />
 	</div>
-	<Timeline video_ids={VIDEO_IDS} {current_index} {progress} on_select={switch_to_video} />
 	<div class="flex shrink-0 items-center gap-3 bg-gray-900 px-2 py-0.5">
 		<div class="min-w-0 flex-1 text-right">
 			<span class="text-xs text-white/70">
