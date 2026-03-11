@@ -32,6 +32,10 @@ declare namespace YT {
 
 		isMuted(): boolean
 
+		getVolume(): number
+
+		setVolume(volume: number): void
+
 		destroy(): void
 	}
 

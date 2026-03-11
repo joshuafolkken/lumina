@@ -16,7 +16,7 @@
 	let current_index = $state(0)
 	let progress = $state(0)
 	// eslint-disable-next-line init-declarations
-	let is_muted_previous: boolean | undefined
+	let effective_volume_previous: number | undefined
 
 	function get_video_id(index: number): string {
 		return VIDEO_IDS[index % VIDEO_IDS.length] ?? VIDEO_IDS[0]
@@ -33,17 +33,21 @@
 		}
 	}
 
-	function detect_and_save_mute_change(): void {
+	function get_effective_volume(target: YT.Player): number {
+		return target.isMuted() ? 0 : target.getVolume()
+	}
+
+	function detect_and_save_volume_change(): void {
 		if (!player) return
-		const is_muted = player.isMuted()
-		if (is_muted_previous === is_muted) return
-		is_muted_previous = is_muted
-		volume_preference.save(!is_muted)
+		const effective_volume = get_effective_volume(player)
+		if (effective_volume_previous === effective_volume) return
+		effective_volume_previous = effective_volume
+		volume_preference.save_level(effective_volume)
 	}
 
 	function tick(): void {
 		update_progress()
-		detect_and_save_mute_change()
+		detect_and_save_volume_change()
 	}
 
 	function switch_to_video(index: number): void {
@@ -62,8 +66,10 @@
 
 	function handle_player_ready(event: YT.PlayerReadyEvent): void {
 		event.target.playVideo()
+		const saved_level = volume_preference.load_level()
+		event.target.setVolume(saved_level)
 
-		if (volume_preference.load()) {
+		if (saved_level > 0) {
 			event.target.unMute()
 		}
 	}
@@ -76,7 +82,7 @@
 
 		/* eslint-disable @typescript-eslint/naming-convention */
 		player = new yt_api.Player(PLAYER_ELEMENT_ID, {
-			videoId: VIDEO_IDS[0],
+			videoId: get_video_id(0),
 			width: '100%',
 			height: '100%',
 			playerVars: {
