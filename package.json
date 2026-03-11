@@ -13,7 +13,7 @@
 			"lefthook"
 		]
 	},
-	"version": "0.23.0",
+	"version": "0.24.0",
 	"type": "module",
 	"packageManager": "pnpm@10.31.0+sha512.e3927388bfaa8078ceb79b748ffc1e8274e84d75163e67bc22e06c0d3aed43dd153151cbf11d7f8301ff4acb98c68bdc5cadf6989532801ffafe3b3e4a63c268",
 	"scripts": {
@@ -26,7 +26,7 @@
 		"preview:normal": "vite preview",
 		"preview:stop": "pnpm exec kill-port 4173 || true",
 		"prepare": "pnpm run gen && pnpm paraglide:compile && svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-fast-check --incremental",
+		"check": "pnpm paraglide:compile && svelte-kit sync && svelte-fast-check --incremental",
 		"check:ci": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint:prettier": "prettier --check .",
