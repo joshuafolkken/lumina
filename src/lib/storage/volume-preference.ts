@@ -1,17 +1,18 @@
-const STORAGE_KEY = 'sound_enabled'
+const VOLUME_LEVEL_KEY = 'volume_level'
+const DEFAULT_VOLUME = 100
 
-function load(): boolean {
-	const stored = localStorage.getItem(STORAGE_KEY)
-	return stored === null ? true : stored === 'true'
+function load_level(): number {
+	const stored = localStorage.getItem(VOLUME_LEVEL_KEY)
+	return stored === null ? DEFAULT_VOLUME : Number(stored)
 }
 
-function save(is_enabled: boolean): void {
-	localStorage.setItem(STORAGE_KEY, String(is_enabled))
+function save_level(level: number): void {
+	localStorage.setItem(VOLUME_LEVEL_KEY, String(level))
 }
 
 const volume_preference = {
-	load,
-	save,
+	load_level,
+	save_level,
 }
 
 export { volume_preference }
