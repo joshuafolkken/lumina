@@ -35,5 +35,5 @@
 		"./**/*.ts",
 		"./**/*.svelte"
 	],
-	"exclude": ["node_modules", "build", "dist"]
+	"exclude": ["node_modules", "build", "dist", "src/service-worker.ts"]
 }
