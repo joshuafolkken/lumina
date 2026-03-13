@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <style>
+    .lumina-fill { fill: #111111; }
+    .lumina-stroke { stroke: #111111; fill: none; }
+    @media (prefers-color-scheme: dark) { 
+      .lumina-fill { fill: #EEEEEE; } 
+      .lumina-stroke { stroke: #EEEEEE; }
+    }
+  </style>
+
+  <mask id="play-cutout">
+    <rect width="512" height="512" fill="white" />
+    <path d="M 225 202 L 225 310 L 318 256 Z" fill="black" stroke="black" stroke-width="28" stroke-linejoin="round" />
+  </mask>
+  
+  <g mask="url(#play-cutout)">
+    <!-- Screen frame -->
+    <rect x="56" y="56" width="400" height="400" rx="96" stroke-width="40" class="lumina-stroke" />
+    
+    <!-- Lumina spark / light burst -->
+    <path d="M 256 56 C 256 166 346 256 456 256 C 346 256 256 346 256 456 C 256 346 166 256 56 256 C 166 256 256 166 256 56 Z" class="lumina-fill" />
+  </g>
+</svg>
