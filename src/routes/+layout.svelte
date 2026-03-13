@@ -2,7 +2,6 @@
 	import { page } from '$app/state'
 	import { locales, localizeHref } from '$lib/paraglide/runtime'
 	import './layout.css'
-	import favicon from '$lib/assets/favicon.svg'
 
 	const { children } = $props()
 </script>
@@ -10,7 +9,7 @@
 <svelte:head>
 	<title>Lumina</title>
 	<meta name="description" content="YouTube動画を自動再生するデジタルサイネージアプリ。" />
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href="/icon.svg" type="image/svg+xml" />
 </svelte:head>
 <!-- eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Svelte 5 snippet render -->
 {@render children()}
