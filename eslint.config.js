@@ -56,6 +56,7 @@ export default defineConfig(
 			'node_modules/**',
 			'src/app.d.ts',
 			'*.config.{ts,js,cjs,mjs}',
+			'src/service-worker.ts',
 			// 'src/routes/**/+layout.svelte',
 			// 'src/routes/**/+layout.ts'
 
