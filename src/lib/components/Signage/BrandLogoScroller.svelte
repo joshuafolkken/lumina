@@ -7,7 +7,12 @@
 <div class="logo-panel">
 	<div class="logo-track">
 		{#each logos as logo, index (index)}
-			<a href={logo.url} target="_blank" rel="noopener noreferrer" class="logo-item">
+			<a
+				href={logo.lineup_url ?? logo.url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="logo-item"
+			>
 				<img
 					src={logo.src}
 					alt={logo.name}
