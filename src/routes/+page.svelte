@@ -13,6 +13,7 @@
 
 	// eslint-disable-next-line init-declarations
 	let player: YT.Player | undefined
+	let is_player_ready = false
 	let signage_root = $state<HTMLElement | undefined>()
 	let current_index = $state(0)
 	let progress = $state(0)
@@ -24,7 +25,7 @@
 	}
 
 	function update_progress(): void {
-		if (!player) return
+		if (!player || !is_player_ready) return
 		if (player.getPlayerState() !== YT.PlayerState.PLAYING) return
 
 		const total = player.getDuration()
@@ -39,7 +40,7 @@
 	}
 
 	function detect_and_save_volume_change(): void {
-		if (!player) return
+		if (!player || !is_player_ready) return
 		const effective_volume = get_effective_volume(player)
 		if (effective_volume_previous === effective_volume) return
 		effective_volume_previous = effective_volume
@@ -65,7 +66,8 @@
 		switch_to_video((current_index + 1) % VIDEO_IDS.length)
 	}
 
-	function handle_player_ready(event: YT.PlayerReadyEvent): void {
+	function handle_is_player_ready(event: YT.PlayerReadyEvent): void {
+		is_player_ready = true
 		event.target.playVideo()
 		const saved_level = volume_preference.load_level()
 		event.target.setVolume(saved_level)
@@ -92,7 +94,7 @@
 				mute: 1,
 			},
 			events: {
-				onReady: handle_player_ready,
+				onReady: handle_is_player_ready,
 				onStateChange: handle_state_change,
 			},
 		}
@@ -135,7 +137,7 @@
 </script>
 
 <h1 class="sr-only">Lumina</h1>
-<div bind:this={signage_root} class="signage-root flex w-full flex-col overflow-hidden bg-black">
+<main bind:this={signage_root} class="signage-root flex w-full flex-col overflow-hidden bg-black">
 	<div class="flex min-h-0 flex-1 flex-col">
 		<div class="flex min-h-0 flex-1">
 			<div class="min-h-0 flex-1">
@@ -162,7 +164,7 @@
 		</div>
 		<FullscreenButton target={signage_root} />
 	</div>
-</div>
+</main>
 
 <style>
 	.signage-root {

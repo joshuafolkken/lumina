@@ -7,7 +7,11 @@
 	const { children } = $props()
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+	<title>Lumina</title>
+	<meta name="description" content="YouTube動画を自動再生するデジタルサイネージアプリ。" />
+	<link rel="icon" href={favicon} />
+</svelte:head>
 <!-- eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Svelte 5 snippet render -->
 {@render children()}
 
