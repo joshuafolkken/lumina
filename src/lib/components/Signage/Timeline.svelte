@@ -4,7 +4,7 @@
 	const SCROLL_IDLE_THRESHOLD_MS = 7000
 	const CLICK_SCROLL_DELAY_MS = 1000
 	const SMOOTH_SCROLL_MAX_DURATION_MS = 1000
-	const HALF_DIVISOR = 2
+	const HALF = 2
 
 	interface Props {
 		video_ids: ReadonlyArray<string>
@@ -41,15 +41,17 @@
 		scroll_reset_timer = setTimeout(reset_programmatic_scroll, SMOOTH_SCROLL_MAX_DURATION_MS)
 	}
 
+	function calc_centered_scroll_top(item: HTMLElement, cont: HTMLElement): number {
+		return item.offsetTop - cont.clientHeight / HALF + item.offsetHeight / HALF
+	}
+
 	function scroll_to_index(index: number): void {
 		if (!container) return
 		const item = container.children.item(index)
 		if (!(item instanceof HTMLElement)) return
 
-		const scroll_left =
-			item.offsetLeft - container.clientWidth / HALF_DIVISOR + item.offsetWidth / HALF_DIVISOR
 		begin_programmatic_scroll()
-		container.scrollTo({ left: scroll_left, behavior: 'smooth' })
+		container.scrollTo({ top: calc_centered_scroll_top(item, container), behavior: 'smooth' })
 	}
 
 	function cancel_auto_scroll(): void {
@@ -110,7 +112,7 @@
 
 <div
 	bind:this={container}
-	class="flex h-[15vh] shrink-0 flex-row gap-[1vh] overflow-x-auto overflow-y-hidden bg-gray-900 p-[1vh]"
+	class="flex h-full w-[15vw] shrink-0 flex-col gap-[1vh] overflow-x-hidden overflow-y-auto bg-gray-900 p-[1vh]"
 	onscroll={handle_user_scroll}
 	onscrollend={handle_scroll_end}
 >

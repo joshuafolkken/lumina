@@ -18,7 +18,11 @@ export const import_rules = {
 	// 循環依存を禁止
 	'import/no-cycle': 'error',
 	// 未使用のインポートを禁止
-	'import/no-unused-modules': 'error',
+	// ESLint 10 で FileEnumerator API が削除されたため no-op だが、将来の代替実装に備えて残す
+	'import/no-unused-modules': [
+		'error',
+		{ unusedExports: true, suppressMissingFileEnumeratorAPIWarning: true },
+	],
 	// CommonJSを禁止
 	'import/no-commonjs': 'error',
 	// AMD形式を禁止
