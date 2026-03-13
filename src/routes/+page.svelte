@@ -9,6 +9,7 @@
 
 	const PROGRESS_INTERVAL_MS = 100
 	const PLAYER_ELEMENT_ID = 'yt-player'
+	const IV_LOAD_POLICY_ANNOTATIONS_OFF = 3
 
 	// eslint-disable-next-line init-declarations
 	let player: YT.Player | undefined
@@ -74,14 +75,9 @@
 		}
 	}
 
-	function init_player(): void {
-		const yt_api = globalThis.YT
-
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (!yt_api) return
-
-		/* eslint-disable @typescript-eslint/naming-convention */
-		player = new yt_api.Player(PLAYER_ELEMENT_ID, {
+	/* eslint-disable @typescript-eslint/naming-convention */
+	function make_player_options(): YT.PlayerOptions {
+		return {
 			videoId: get_video_id(0),
 			width: '100%',
 			height: '100%',
@@ -92,15 +88,24 @@
 				rel: 0,
 				modestbranding: 1,
 				playsinline: 1,
-				iv_load_policy: 3,
+				iv_load_policy: IV_LOAD_POLICY_ANNOTATIONS_OFF,
 				mute: 1,
 			},
 			events: {
 				onReady: handle_player_ready,
 				onStateChange: handle_state_change,
 			},
-		})
-		/* eslint-enable @typescript-eslint/naming-convention */
+		}
+	}
+	/* eslint-enable @typescript-eslint/naming-convention */
+
+	function init_player(): void {
+		const yt_api = globalThis.YT
+
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (!yt_api) return
+
+		player = new yt_api.Player(PLAYER_ELEMENT_ID, make_player_options())
 	}
 
 	function load_youtube_api(): void {
@@ -136,9 +141,9 @@
 			<div class="min-h-0 flex-1">
 				<div id={PLAYER_ELEMENT_ID} class="video-container h-full w-full"></div>
 			</div>
-			<BrandLogoScroller />
+			<Timeline video_ids={VIDEO_IDS} {current_index} {progress} on_select={switch_to_video} />
 		</div>
-		<Timeline video_ids={VIDEO_IDS} {current_index} {progress} on_select={switch_to_video} />
+		<BrandLogoScroller />
 	</div>
 	<div class="flex shrink-0 items-center gap-[1vh] bg-gray-900 px-[1vh] py-[0.4vh]">
 		<div class="min-w-0 flex-1 text-right">

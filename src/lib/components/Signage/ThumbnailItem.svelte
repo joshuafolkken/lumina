@@ -42,12 +42,12 @@
 	/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- configurable via SHOW_THUMBNAIL_METADATA_ALWAYS */
 	const should_show_metadata = $derived(SHOW_THUMBNAIL_METADATA_ALWAYS || is_hovering)
 
-	function format_duration_display(): string {
+	const duration_display = $derived.by((): string => {
 		if (metadata === undefined) return '…'
 		if (metadata.duration_seconds === undefined) return '?:??'
 
 		return time_format.duration(metadata.duration_seconds)
-	}
+	})
 
 	function handle_mouse_leave(): void {
 		is_hovering = false
@@ -130,7 +130,7 @@
 </script>
 
 <div
-	class="relative aspect-video h-full shrink-0 cursor-pointer overflow-hidden rounded transition-all duration-200"
+	class="relative aspect-video w-full shrink-0 cursor-pointer overflow-hidden rounded transition-all duration-200"
 	class:ring-[0.3vh]={is_active}
 	class:ring-white={is_active}
 	onmouseenter={handle_mouse_enter}
@@ -152,14 +152,12 @@
 	{#if should_show_metadata}
 		<div class="absolute inset-0 p-[1vh]" aria-hidden="true">
 			<p
-				class="thumbnail-overlay-text -mx-[0.5vh] line-clamp-2 px-[0.5vh] text-[max(1.2vh,10px)] leading-tight font-medium text-white"
+				class="thumbnail-overlay-text -mx-[0.5vh] line-clamp-2 px-[0.5vh] leading-tight font-medium"
 			>
 				{metadata?.title ?? '…'}
 			</p>
-			<p
-				class="thumbnail-overlay-text absolute right-[1vh] bottom-[1vh] text-[max(1.2vh,10px)] text-white"
-			>
-				{format_duration_display()}
+			<p class="thumbnail-overlay-text absolute right-[1vh] bottom-[1vh]">
+				{duration_display}
 			</p>
 		</div>
 	{/if}
@@ -173,6 +171,8 @@
 
 <style>
 	.thumbnail-overlay-text {
+		font-size: max(1.2vh, 10px);
+		color: white;
 		text-shadow:
 			0 0 2px black,
 			0 0 4px black,
