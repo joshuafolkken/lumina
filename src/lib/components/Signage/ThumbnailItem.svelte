@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { video_api, type VideoMetadata } from '$lib/api/video-api'
-	import { SHOW_THUMBNAIL_METADATA_ALWAYS } from '$lib/constants/signage'
+	import { SHOW_THUMBNAIL_METADATA_ALWAYS, SIGNAGE_RING_ACTIVE } from '$lib/constants/signage'
 	import { PERCENT } from '$lib/constants/ui'
-	import { YOUTUBE_THUMBNAIL_BASE_URL } from '$lib/constants/youtube'
+	import { youtube } from '$lib/constants/youtube'
 	import { time_format } from '$lib/utils/time-format'
-
-	const TAP_THRESHOLD_PX = 5
+	import { touch_utilities } from '$lib/utils/touch-utilities'
 
 	interface Props {
 		video_id: string
@@ -57,14 +56,6 @@
 	let touch_start_y = 0
 	let did_scroll = false
 
-	function thumbnail_url(id: string): string {
-		return `${YOUTUBE_THUMBNAIL_BASE_URL}/${id}/mqdefault.jpg`
-	}
-
-	function exceeds_tap_threshold(delta_x: number, delta_y: number): boolean {
-		return delta_x >= TAP_THRESHOLD_PX || delta_y >= TAP_THRESHOLD_PX
-	}
-
 	function handle_touch_start(event_: TouchEvent): void {
 		touch_start_x = event_.touches[0]?.clientX ?? 0
 		touch_start_y = event_.touches[0]?.clientY ?? 0
@@ -78,22 +69,11 @@
 		const delta_x = Math.abs(touch.clientX - touch_start_x)
 		const delta_y = Math.abs(touch.clientY - touch_start_y)
 
-		did_scroll = did_scroll || exceeds_tap_threshold(delta_x, delta_y)
-	}
-
-	function compute_touch_deltas(event_: TouchEvent): { delta_x: number; delta_y: number } {
-		const [touch] = event_.changedTouches
-		const end_x = touch?.clientX ?? touch_start_x
-		const end_y = touch?.clientY ?? touch_start_y
-
-		return {
-			delta_x: Math.abs(end_x - touch_start_x),
-			delta_y: Math.abs(touch_start_y - end_y),
-		}
+		did_scroll = did_scroll || touch_utilities.exceeds_tap_threshold(delta_x, delta_y)
 	}
 
 	function try_handle_scroll(delta_x: number, delta_y: number): boolean {
-		const is_scroll = did_scroll || exceeds_tap_threshold(delta_x, delta_y)
+		const is_scroll = did_scroll || touch_utilities.exceeds_tap_threshold(delta_x, delta_y)
 		if (!is_scroll) return false
 
 		did_scroll = true
@@ -103,7 +83,10 @@
 	function handle_touch_end(event_: TouchEvent): void {
 		event_.preventDefault()
 
-		const { delta_x, delta_y } = compute_touch_deltas(event_)
+		const { delta_x, delta_y } = touch_utilities.get_touch_deltas(event_, {
+			x: touch_start_x,
+			y: touch_start_y,
+		})
 
 		if (try_handle_scroll(delta_x, delta_y)) return
 
@@ -130,9 +113,9 @@
 </script>
 
 <div
-	class="relative aspect-video w-full shrink-0 cursor-pointer overflow-hidden rounded transition-all duration-200"
-	class:ring-[0.3vh]={is_active}
-	class:ring-white={is_active}
+	class="relative aspect-video w-full shrink-0 cursor-pointer overflow-hidden rounded transition-all duration-200 {is_active
+		? `${SIGNAGE_RING_ACTIVE} ring-white`
+		: ''}"
 	onmouseenter={handle_mouse_enter}
 	onmouseleave={handle_mouse_leave}
 	ontouchstart={handle_touch_start}
@@ -144,7 +127,7 @@
 	tabindex="0"
 >
 	<img
-		src={thumbnail_url(video_id)}
+		src={youtube.thumbnail_url(video_id)}
 		alt="Video thumbnail"
 		class="block w-full object-cover"
 		draggable="false"
@@ -171,7 +154,7 @@
 
 <style>
 	.thumbnail-overlay-text {
-		font-size: max(1.2vh, 10px);
+		font-size: var(--signage-font-size-small);
 		color: white;
 		text-shadow:
 			0 0 2px black,

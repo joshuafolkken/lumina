@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state'
+	import { APP_NAME } from '$lib/constants/app'
 	import { locales, localizeHref } from '$lib/paraglide/runtime'
 	import './layout.css'
 
@@ -7,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>Lumina</title>
+	<title>{APP_NAME}</title>
 	<meta name="description" content="YouTube動画を自動再生するデジタルサイネージアプリ。" />
 	<link rel="icon" href="/icon.svg" type="image/svg+xml" />
 </svelte:head>

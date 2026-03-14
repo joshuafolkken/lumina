@@ -1,9 +1,12 @@
 <script lang="ts">
+	import {
+		TIMELINE_CLICK_SCROLL_DELAY_MS,
+		TIMELINE_IDLE_THRESHOLD_MS,
+		TIMELINE_PANEL_CLASS,
+		TIMELINE_SMOOTH_SCROLL_MS,
+	} from '$lib/constants/signage'
 	import ThumbnailItem from './ThumbnailItem.svelte'
 
-	const SCROLL_IDLE_THRESHOLD_MS = 7000
-	const CLICK_SCROLL_DELAY_MS = 1000
-	const SMOOTH_SCROLL_MAX_DURATION_MS = 1000
 	const HALF = 2
 
 	interface Props {
@@ -27,7 +30,7 @@
 	}
 
 	function is_scroll_idle(): boolean {
-		return time_since_last_user_scroll_ms() >= SCROLL_IDLE_THRESHOLD_MS
+		return time_since_last_user_scroll_ms() >= TIMELINE_IDLE_THRESHOLD_MS
 	}
 
 	function reset_programmatic_scroll(): void {
@@ -38,7 +41,7 @@
 	function begin_programmatic_scroll(): void {
 		is_programmatic_scrolling = true
 		clearTimeout(scroll_reset_timer)
-		scroll_reset_timer = setTimeout(reset_programmatic_scroll, SMOOTH_SCROLL_MAX_DURATION_MS)
+		scroll_reset_timer = setTimeout(reset_programmatic_scroll, TIMELINE_SMOOTH_SCROLL_MS)
 	}
 
 	function calc_centered_scroll_top(item: HTMLElement, cont: HTMLElement): number {
@@ -72,9 +75,9 @@
 	}
 
 	function calc_scroll_delay_ms(): number {
-		if (did_user_select) return CLICK_SCROLL_DELAY_MS
+		if (did_user_select) return TIMELINE_CLICK_SCROLL_DELAY_MS
 		if (is_scroll_idle()) return 0
-		return SCROLL_IDLE_THRESHOLD_MS - time_since_last_user_scroll_ms()
+		return TIMELINE_IDLE_THRESHOLD_MS - time_since_last_user_scroll_ms()
 	}
 
 	$effect(() => {
@@ -99,7 +102,7 @@
 			return
 		}
 
-		schedule_scroll_to_index(current_index, SCROLL_IDLE_THRESHOLD_MS)
+		schedule_scroll_to_index(current_index, TIMELINE_IDLE_THRESHOLD_MS)
 	}
 
 	function make_select_handler(item_index: number): () => void {
@@ -112,7 +115,7 @@
 
 <div
 	bind:this={container}
-	class="flex h-full w-[15vw] shrink-0 flex-col gap-[1vh] overflow-x-hidden overflow-y-auto bg-gray-900 p-[1vh]"
+	class={TIMELINE_PANEL_CLASS}
 	onscroll={handle_user_scroll}
 	onscrollend={handle_scroll_end}
 >

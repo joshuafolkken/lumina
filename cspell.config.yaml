@@ -38,6 +38,8 @@ words:
   - mischeck
   - modestbranding
   - mqdefault
+  - noopener
+  - noreferrer
   - octocat
   - OEMBED
   - paraglide
@@ -49,5 +51,6 @@ words:
   - trycloudflare
   - unrs
   - vite
+  - vmin
   - workerd
   - youtubei

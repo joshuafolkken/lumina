@@ -1,3 +1,17 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+:root {
+	--signage-font-size-small: max(1.2vh, 10px);
+}
+
+.brand-invert {
+	filter: invert(1);
+}
+
+.signage-root {
+	height: 100vh;
+	height: 100dvh;
+	min-height: 0;
+}

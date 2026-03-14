@@ -1,11 +1,6 @@
 <script lang="ts">
+	import { SIGNAGE_FOCUS_RING } from '$lib/constants/signage'
 	import { onMount } from 'svelte'
-
-	interface Props {
-		target: HTMLElement | undefined
-	}
-
-	const { target }: Props = $props()
 
 	let is_fullscreen = $state(false)
 	let is_transitioning = false
@@ -21,20 +16,21 @@
 	}
 
 	function toggle_fullscreen(event: MouseEvent): void {
-		if (!target || is_transitioning) return
+		if (is_transitioning) return
 
 		is_transitioning = true
 
 		if (is_fullscreen) {
 			void document.exitFullscreen()
 		} else {
-			void target.requestFullscreen()
+			void document.documentElement.requestFullscreen()
 		}
 
 		blur_button(event)
 	}
 
 	onMount(() => {
+		is_fullscreen = document.fullscreenElement !== null
 		document.addEventListener('fullscreenchange', handle_fullscreen_change)
 
 		return function (): void {
@@ -45,8 +41,8 @@
 
 <button
 	type="button"
-	class="flex h-[max(4vh,32px)] w-[max(4vh,32px)] shrink-0 cursor-pointer items-center justify-center rounded text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-[0.3vh] focus-visible:ring-white/50"
-	aria-label="フルスクリーン"
+	class="flex h-[max(4vh,32px)] w-[max(4vh,32px)] shrink-0 cursor-pointer items-center justify-center rounded text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none {SIGNAGE_FOCUS_RING}"
+	aria-label={is_fullscreen ? 'フルスクリーン解除' : 'フルスクリーン'}
 	onclick={toggle_fullscreen}
 >
 	<svg
@@ -60,9 +56,16 @@
 		stroke-linejoin="round"
 		aria-hidden="true"
 	>
-		<path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
-		<path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
-		<path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
-		<path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+		{#if is_fullscreen}
+			<path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
+			<path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
+			<path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
+			<path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
+		{:else}
+			<path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+			<path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+			<path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+			<path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+		{/if}
 	</svg>
 </button>
