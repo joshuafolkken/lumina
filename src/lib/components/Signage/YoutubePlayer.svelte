@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { IV_LOAD_POLICY_ANNOTATIONS_OFF, YOUTUBE_IFRAME_API } from '$lib/constants/youtube'
+	import { playback_preference } from '$lib/storage/playback-preference'
 	import { volume_preference } from '$lib/storage/volume-preference'
 	import { onMount } from 'svelte'
 
@@ -10,6 +11,7 @@
 		video_ids: ReadonlyArray<string>
 		current_index: number
 		progress: number
+		start_time_seconds?: number
 		on_load_ready?: (load: (index: number) => void) => void
 	}
 
@@ -19,6 +21,7 @@
 		video_ids,
 		current_index = $bindable(0),
 		progress = $bindable(0),
+		start_time_seconds = 0,
 		on_load_ready,
 	}: Props = $props()
 
@@ -34,8 +37,12 @@
 		return video_ids[index % video_ids.length] ?? video_ids[0] ?? ''
 	}
 
+	function is_player_available(target: YT.Player | undefined): target is YT.Player {
+		return target !== undefined && is_player_ready
+	}
+
 	function update_progress(): void {
-		if (!player || !is_player_ready) return
+		if (!is_player_available(player)) return
 		if (player.getPlayerState() !== YT.PlayerState.PLAYING) return
 
 		const total = player.getDuration()
@@ -50,16 +57,22 @@
 	}
 
 	function detect_and_save_volume_change(): void {
-		if (!player || !is_player_ready) return
+		if (!is_player_available(player)) return
 		const effective_volume = get_effective_volume(player)
 		if (effective_volume_previous === effective_volume) return
 		effective_volume_previous = effective_volume
 		volume_preference.save_level(effective_volume)
 	}
 
+	function save_playback(): void {
+		if (!is_player_available(player)) return
+		playback_preference.save({ index: current_index, time_seconds: player.getCurrentTime() })
+	}
+
 	function tick(): void {
 		update_progress()
 		detect_and_save_volume_change()
+		save_playback()
 	}
 
 	function load_video(index: number): void {
@@ -85,7 +98,7 @@
 		is_player_ready = true
 		last_loaded_index = current_index
 		on_load_ready?.(load_video)
-		load_video(current_index)
+		if (start_time_seconds > 0) event.target.seekTo(start_time_seconds, true)
 		event.target.playVideo()
 		apply_saved_volume(event.target)
 	}
@@ -93,7 +106,7 @@
 	/* eslint-disable @typescript-eslint/naming-convention */
 	function make_player_options(): YT.PlayerOptions {
 		return {
-			videoId: get_video_id(0),
+			videoId: get_video_id(current_index),
 			width: '100%',
 			height: '100%',
 			playerVars: {
@@ -139,7 +152,7 @@
 	}
 
 	$effect(() => {
-		if (!player || !is_player_ready) return
+		if (!is_player_available(player)) return
 		if (last_loaded_index === current_index) return
 		last_loaded_index = current_index
 		load_video(current_index)

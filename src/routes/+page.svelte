@@ -7,8 +7,11 @@
 	import { ROUTES } from '$lib/constants/routes'
 	import { LAYOUT_FILL, LAYOUT_FLEX_COL_FILL, LAYOUT_FLEX_ROW_FILL } from '$lib/constants/signage'
 	import { VIDEO_IDS } from '$lib/constants/video-ids'
+	import { playback_preference } from '$lib/storage/playback-preference'
 
-	let current_index = $state(0)
+	const saved = playback_preference.load()
+
+	let current_index = $state(saved.index)
 	let progress = $state(0)
 	// eslint-disable-next-line init-declarations
 	let load_video: ((index: number) => void) | undefined
@@ -29,6 +32,7 @@
 					video_ids={VIDEO_IDS}
 					bind:current_index
 					bind:progress
+					start_time_seconds={saved.time_seconds}
 					on_load_ready={(load: (index: number) => void) => {
 						load_video = load
 					}}
