@@ -1,7 +1,7 @@
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import { sveltekit } from '@sveltejs/kit/vite'
 import tailwindcss from '@tailwindcss/vite'
-import { playwright } from '@vitest/browser-playwright'
+// import { playwright } from '@vitest/browser-playwright'
 import devtoolsJson from 'vite-plugin-devtools-json'
 import { defineConfig } from 'vitest/config'
 import pkg from './package.json'
