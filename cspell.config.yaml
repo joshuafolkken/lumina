@@ -23,6 +23,7 @@ ignorePaths:
   - project.inlang/**
   - src/lib/constants/video-ids.ts
   - .dev.vars**
+  - src/lib/server/db/auth.schema.ts
 words:
   - aikidosec
   - coderabbit

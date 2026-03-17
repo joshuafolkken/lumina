@@ -38,6 +38,7 @@ const FILE_PATTERNS = {
 	params: ['src/params/**/*.ts'],
 	routes: ['src/routes/**/+*.ts', 'src/routes/**/+*.js'],
 	tests: ['**/*.test.ts', '**/*.spec.ts', '**/*.test.svelte.ts', '**/*.spec.svelte.ts'],
+	database: ['src/lib/server/db/**/*.ts'],
 }
 
 // SvelteKitのルートファイル名パターン
@@ -61,6 +62,8 @@ export default defineConfig(
 			// 'src/routes/**/+layout.ts'
 
 			'src/routes/demo/**',
+			'src/lib/server/db/**',
+			'src/lib/server/auth.ts',
 		],
 	},
 	js.configs.recommended,
@@ -211,6 +214,13 @@ export default defineConfig(
 	{
 		// SvelteKitのルートファイル（+page.server.tsなど）では名前付きエクスポートが必須のためルールを緩和
 		files: FILE_PATTERNS.routes,
+		rules: {
+			'no-restricted-syntax': 'off',
+		},
+	},
+	{
+		// SvelteKitのhooks.server.tsではhandleの名前付きエクスポートが必須
+		files: ['src/hooks.server.ts'],
 		rules: {
 			'no-restricted-syntax': 'off',
 		},
